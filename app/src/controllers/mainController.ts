@@ -1,25 +1,25 @@
-/// <reference path="_all.ts" />
+/// <reference path="../_all.ts" />
 
 module ContactManagerApp {
-
+  
   export class MainController {
-    
     static $inject = ['userService', '$mdSidenav', '$mdBottomSheet', '$mdToast', '$mdDialog', '$mdMedia' ];    
     
     constructor(
       private userService: IUserService, 
       private $mdSidenav: angular.material.ISidenavService, 
-      private $mdBottomSheet, 
-      private $mdToast, 
-      private $mdDialog, 
-      private $mdMedia) {
+      private $mdBottomSheet: angular.material.IBottomSheetService, 
+      private $mdToast: angular.material.IToastService, 
+      private $mdDialog: angular.material.IDialogService, 
+      private $mdMedia: angular.material.IMedia) {
         var self = this;
         
         this.userService
           .loadAllUsers()
           .then((users: User[]) => {
-            self.users    = [].concat(users);
+            self.users = users;
             self.selected = users[0];
+            self.userService.selectedUser = self.selected;
           });          
     }
     
@@ -42,38 +42,19 @@ module ContactManagerApp {
         templateUrl: './dist/view/newUserDialog.html',
         parent: angular.element(document.body),
         targetEvent: $event,
-        controller: [ '$mdDialog', DialogController],
+        controller: AddUserDialogController,
         controllerAs: "ctrl",      
         clickOutsideToClose:true,
         fullscreen: useFullScreen
-      }).then((user) => {
-        var newUser: User = { 
-          name: user.firstName + ' ' + user.lastName,
-          bio: user.bio,
-          avatar: user.avatar,
-          notes: []
-        };
+      }).then((user: CreateUser) => {
+        var newUser: User = User.fromCreate(user);
         self.users.push(newUser);
         self.selectUser(newUser);
         
         self.openToast("User added");
       }, () => {
         console.log('You cancelled the dialog.');
-      });
-  
-      function DialogController($mdDialog) {
-        this.user = {};
-        this.avatars = [
-          'svg-1','svg-2','svg-3','svg-4'
-        ];
-        this.cancel = function() {
-          self.$mdDialog.cancel();
-        };
-
-        this.save = function() {
-          self.$mdDialog.hide(this.user);
-        };
-      }  
+      });    
     }
 
     removeNote(note) {
@@ -111,7 +92,7 @@ module ContactManagerApp {
     openToast(message): void {
       this.$mdToast.show(
         this.$mdToast.simple()
-          .content(message)
+          .textContent(message)
           .position('top right')
           .hideDelay(5000)
         );
@@ -123,6 +104,7 @@ module ContactManagerApp {
 
     selectUser ( user ) {
       this.selected = user;
+      this.userService.selectedUser = user;
       
       var sidebar = this.$mdSidenav('left');
       if (sidebar.isOpen()) {
@@ -132,32 +114,17 @@ module ContactManagerApp {
       this.tabIndex = 0;
     }
 
-    showContactOptions($event) {
-      var user = this.selected;
-
-      return this.$mdBottomSheet.show({
+    showContactOptions($event) {      
+      this.$mdBottomSheet.show({
         parent: angular.element(document.getElementById('wrapper')),
         templateUrl: './dist/view/contactSheet.html',
-        controller: [ '$mdBottomSheet', ContactPanelController],
+        controller: ContactPanelController,
         controllerAs: "cp",
         bindToController : true,
         targetEvent: $event
       }).then((clickedItem) => {
         clickedItem && console.log( clickedItem.name + ' clicked!');
       });
-
-      function ContactPanelController( $mdBottomSheet ) {
-        this.user = user;
-        this.actions = [
-          { name: 'Phone'       , icon: 'phone'       , icon_url: 'assets/svg/phone.svg'},
-          { name: 'Twitter'     , icon: 'twitter'     , icon_url: 'assets/svg/twitter.svg'},
-          { name: 'Google+'     , icon: 'google_plus' , icon_url: 'assets/svg/google_plus.svg'},
-          { name: 'Hangout'     , icon: 'hangouts'    , icon_url: 'assets/svg/hangouts.svg'}
-        ];
-        this.submitContact = (action) => {
-          $mdBottomSheet.hide(action);
-        };
-      }
     }
   }
 }

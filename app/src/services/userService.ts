@@ -1,9 +1,10 @@
-/// <reference path="_all.ts" />
+/// <reference path="../_all.ts" />
 
 module ContactManagerApp {
   
   export interface IUserService {
     loadAllUsers(): ng.IPromise<User[]>;
+    selectedUser: User;
   }
   
   export class UserService implements IUserService {
@@ -12,7 +13,9 @@ module ContactManagerApp {
     constructor(private $q: ng.IQService) {      
     }
     
-    public loadAllUsers() : ng.IPromise<User[]> {
+    selectedUser: User = null;
+    
+    loadAllUsers() : ng.IPromise<User[]> {
         return this.$q.when(this.users);
     }
     
