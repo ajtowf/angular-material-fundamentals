@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="contactManagerApp">
+  <head>
+    <title>Contact Manager</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="./bower_components/angular-material-icons/angular-material-icons.css"/>
+    <link rel="stylesheet" href="./assets/app.css"/>
+
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+          display: none !important;
+        }
+    </style>
+  </head>
+
+  <body layout="row" ng-cloak ng-controller="MainController as vm">
+    <div ng-include="'dist/view/sidenav.html'" layout="vertical"></div>
+    
+    <div layout="column" flex id="wrapper">
+      <div ng-include="'dist/view/toolbar-header.html'"></div>
+      
+      <md-content flex id="content">
+        <div ng-include="'dist/view/main-content.html'"></div>
+        
+        <md-tabs md-dynamic-height="" md-border-bottom="" md-stretch-tabs="always" md-selected="vm.tabIndex">
+          
+          <md-tab label="Bio">
+            <div ng-include="'dist/view/tab-bio.html'"></div>           
+          </md-tab>
+          
+          <md-tab label="Notes">
+            <div ng-include="'dist/view/tab-notes.html'"></div>            
+          </md-tab>
+          
+        </md-tabs>
+      </md-content>
+           
+    </div>
+
+    <script src="./bower_components/angular/angular.js"></script>
+    <script src="./bower_components/angular-animate/angular-animate.js"></script>
+    <script src="./bower_components/angular-aria/angular-aria.js"></script>
+    <script src="./bower_components/angular-material/angular-material.js"></script>
+    <script src="./bower_components/angular-messages/angular-messages.js"></script>
+    <script src="./bower_components/angular-material-icons/angular-material-icons.js"></script>
+
+    <script src="./dist/models.js"></script>
+    <script src="./dist/userService.js"></script>
+    <script src="./dist/mainController.js"></script>
+    <script src="./dist/boot.js"></script>
+  </body>
+</html>

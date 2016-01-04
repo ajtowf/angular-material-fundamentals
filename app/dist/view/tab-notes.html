@@ -1,0 +1,14 @@
+<div ng-include="'dist/view/tab-notes-form.html'"></div>
+
+<p ng-if="!vm.selected.notes.length">No notes for {{vm.selected.name}}, yet.</p>
+<md-content>
+  <md-card ng-repeat="note in vm.selected.notes | orderBy: '-date':true">
+    <md-card-content>
+      <h3>{{note.title}}</h3>
+      <p>{{note.date | date:'MM/dd/yyyy'}}</p>
+    </md-card-content>
+    <md-card-actions layout="row" layout-align="end center">
+      <md-button ng-click="vm.removeNote(note)">Remove</md-button>
+    </md-card-actions>
+  </md-card>
+</md-content>  
